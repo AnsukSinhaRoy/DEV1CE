@@ -5,7 +5,6 @@ from execution.execution_handler import ExecutionHandler
 from backtesting.backtest import Backtest
 
 if __name__ == "__main__":
-    # Load historical data
     data = pd.read_csv('data/historical_data.csv', parse_dates=True, index_col='datetime')
 
     # Initialize components
