@@ -1,28 +1,9 @@
-# Trading Algorithm
+# Modular Trading Algorithm
 
 This project implements a **modular trading algorithm** using **Object-Oriented Programming (OOP)** principles. It includes data loading, indicator calculations, backtesting, and visualization.
 
 ## 📁 Project Structure
-DEV1CE/
-│── data/
-│   ├── data_loader.py        # Loads and processes data from CSV
-│   ├── indicators.py         # Calculates technical indicators using TA-Lib
-│
-│── strategy/
-│   ├── base_strategy.py      # Base class for trading strategies
-│   ├── ema_strategy.py       # Implements EMA crossover strategy
-│
-│── execution/
-│   ├── backtester.py         # Runs backtests on historical data
-│
-│── visualization/
-│   ├── plotter.py            # Handles visualization of trading results
-│
-│── main.py                   # Entry point for the program
-│── config.py                 # Configuration file for paths and parameters
-│── requirements.txt          # Dependencies
-│── README.md                 # Project documentation
-
+trading_algorithm/ │── data/ │ ├── data_loader.py # Loads and processes data from CSV │ ├── indicators.py # Calculates technical indicators using TA-Lib │ │── strategy/ │ ├── base_strategy.py # Base class for trading strategies │ ├── ema_strategy.py # Implements EMA crossover strategy │ │── execution/ │ ├── backtester.py # Runs backtests on historical data │ │── visualization/ │ ├── plotter.py # Handles visualization of trading results │ │── main.py # Entry point for the program │── config.py # Configuration file for paths and parameters │── requirements.txt # Dependencies │── README.md # Project documentation
 
 
 ## 📌 Features
