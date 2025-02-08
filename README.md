@@ -3,8 +3,7 @@
 This project implements a **modular trading algorithm** using **Object-Oriented Programming (OOP)** principles. It includes data loading, indicator calculations, backtesting, and visualization.
 
 ## 📁 Project Structure
-```plaintext
-trading_algorithm/
+DEV1CE/
 │── data/
 │   ├── data_loader.py        # Loads and processes data from CSV
 │   ├── indicators.py         # Calculates technical indicators using TA-Lib
