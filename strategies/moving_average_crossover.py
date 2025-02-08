@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 class MovingAverageCrossoverStrategy:
     def __init__(self, short_window=30, long_window=60):
