@@ -1,0 +1,9 @@
+This file lists all the dependencies needed to run the project.
+pandas
+numpy
+matplotlib
+talib
+
+To install dependencies, run:
+pip install -r requirements.txt
+
