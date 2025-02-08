@@ -23,7 +23,7 @@ trading_algorithm/
 │── config.py                 # Configuration file for paths and parameters
 │── requirements.txt          # Dependencies
 │── README.md                 # Project documentation
-
+```
 
 
 ## 📌 Features
