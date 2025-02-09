@@ -8,8 +8,8 @@ from visualization.plotter import Plotter
 def main():
     df = DataLoader.load_data()
     df = Indicators.add_indicators(df)
-    strategy = EMACrossoverStrategy(df)
-    Backtester.run_backtest(strategy)
+    signals = EMACrossoverStrategy(df)
+    Backtester.run_backtest(signals)
     Plotter.plot(df)
 
 if __name__ == "__main__":

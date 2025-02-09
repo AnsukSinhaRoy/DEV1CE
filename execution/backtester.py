@@ -4,7 +4,7 @@ import pandas as pd
 class Backtester:
     @staticmethod
     def run_backtest(strategy):
-        df = strategy.apply_strategy()
+        df = strategy.run_strategy()
         final_value = df["portfolio_value"].iloc[-1]
         initial_value = df["close"].iloc[0]
         return_percentage = (final_value - initial_value) / initial_value * 100

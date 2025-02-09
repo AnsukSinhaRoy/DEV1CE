@@ -3,7 +3,7 @@ from strategy.base_strategy import BaseStrategy
 from config import TRAILING_STOP_PCT
 
 class EMACrossoverStrategy(BaseStrategy):
-    def apply_strategy(self):
+    def run_strategy(self):#self.df is the dataframe that will be passed to the strategy
         self.df["signals"] = 0
 
         for i in range(1, len(self.df)):

@@ -10,7 +10,7 @@ SIGNALS_CSV = os.path.join(BASE_DIR, "output", "signals.csv")
 
 # Trading Parameters
 FAST_EMA_PERIOD = 30
-SLOW_EMA_PERIOD = 75
+SLOW_EMA_PERIOD = 70
 RSI_PERIOD = 10
 BOLLINGER_PERIOD = 15
 ATR_PERIOD = 7
