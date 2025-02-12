@@ -1,4 +1,4 @@
-# Modular Trading Algorithm
+# DEV1CE - A Trading Algorithm under Developmewnt
 
 This project implements a **modular trading algorithm** using **Object-Oriented Programming (OOP)** principles. It includes data loading, indicator calculations, backtesting, and visualization.
 
