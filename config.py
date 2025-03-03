@@ -9,8 +9,8 @@ OUTPUT_CSV = os.path.join(BASE_DIR, "output", "FullData.csv")
 SIGNALS_CSV = os.path.join(BASE_DIR, "output", "signals.csv")
 
 # Trading Parameters
-FAST_EMA_PERIOD = 30
-SLOW_EMA_PERIOD = 70
+FAST_EMA_PERIOD = 50
+SLOW_EMA_PERIOD = 100
 RSI_PERIOD = 10
 BOLLINGER_PERIOD = 15
 ATR_PERIOD = 7
