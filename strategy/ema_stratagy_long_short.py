@@ -27,4 +27,4 @@ class EMACrossoverStrategy_long_short:
         elif short_entered and ema_fast > ema_slow:
             signal = -2
 
-        return signal,0
+        return signal

@@ -6,12 +6,15 @@ from visualization.plotter import Plotter
 #import strategies
 from strategy.ema_strategy_long_only import EMACrossoverStrategy_long
 from strategy.ema_stratagy_long_short import EMACrossoverStrategy_long_short
-from strategy.ema_strategy_long_only_stoploss_ATR import ema_strategy_long_only_stoploss_ATR
+from strategy.ASR_Long import run_strategy_ASR_Long
+from strategy.ASR_Long_stoploss import run_strategy_ASR_Long_stoploss
+from strategy.LWVolatilityBreakoutStrategy import DonchianMomentumStrategy
 
 
 def main():
     # Load and preprocess data
-    df = DataLoader.load_data()
+    dfmain = DataLoader.load_data()
+    df = dfmain.iloc[0:100000].copy()
     df = Indicators.add_indicators(df)
     
     prev_values = initialize_state_variables()
@@ -21,22 +24,26 @@ def main():
         row = df.iloc[i]
         
         # STEP 1:  Get signal from different strategies
-        signal_long = EMACrossoverStrategy_long.run_strategy(row, prev_values)
+        signal_EMA_long = EMACrossoverStrategy_long.run_strategy_EMA_Long(df, i, prev_values, window=3)
         signal_long_short = EMACrossoverStrategy_long_short.run_strategy(row, prev_values)
-        signal_long_stoploss_ATR = ema_strategy_long_only_stoploss_ATR.run_strategy(row, prev_values)
+        signal_ASR_long = run_strategy_ASR_Long(row, prev_values)
+        signal_ASR_long_stoploss = run_strategy_ASR_Long_stoploss(row, prev_values)
+        lwvolatility = DonchianMomentumStrategy.run_strategy(df, i, prev_values)
         
-        
-        chosen_signal, stop_loss = signal_long_short
+        chosen_strategy = lwvolatility
 
+
+        signal = chosen_strategy[0]
         # STEP 2: Update portfolio according to the signal
-        prev_values["stop_loss"] = stop_loss
-        prev_values = update_portfolio(chosen_signal, row, prev_values)
+        prev_values["stop_loss"] = chosen_strategy[1]
+        prev_values = update_portfolio(signal, row, prev_values)
 
 
         # STEP 3: Update the dataframe with the chosen signal and portfolio value
-        df.loc[i, "signals"] = chosen_signal
+        df.loc[i, "signals"] = signal
         df.loc[i, "portfolio_value"] = prev_values["portfolio_value"]
         df.loc[i, "shares"] = prev_values["shares"]
+        df.loc[i,"stop_loss"] = chosen_strategy[1]
 
     Backtester.run_backtest(df)
     Plotter.plot(df)
@@ -46,9 +53,9 @@ def initialize_state_variables():
         "short_entered": False,
         "entered": False,
         "shares": 0,
-        "amount": 10000.0,  # Initial cash balance
+        "amount": 10000.0,
         "portfolio_value": 10000.0,
-        "stop_loss": None,  # Store stop-loss value
+        "stop_loss": None,
     }
 
 
@@ -69,7 +76,7 @@ def update_portfolio(signal, row, prev_values):
 
     elif signal == -1:  # Long Exit
         if entered:
-            amount = shares * close_price  # Convert shares to cash
+            amount = shares * close_price
             shares = 0
             entered = False
 
@@ -77,8 +84,8 @@ def update_portfolio(signal, row, prev_values):
         if not entered and not short_entered:
             shares = amount / close_price
             amount = 0
-            short_entered = True
             entered = False
+            short_entered = True
 
     elif signal == -2:  # Short Exit
         if short_entered:
