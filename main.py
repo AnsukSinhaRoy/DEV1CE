@@ -1,14 +1,16 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 from data.data_loader import DataLoader
 import data.indicators as Indicators
 from execution.backtester import Backtester
 from visualization.plotter import Plotter
-
+import config
+import strategy.perfect_signal as ps
 #import strategies
 from strategy.ema_strategy_long_only import EMACrossoverStrategy_long
 from strategy.ema_stratagy_long_short import EMACrossoverStrategy_long_short
 from strategy.ASR_Long import run_strategy_ASR_Long
 from strategy.ASR_Long_stoploss import run_strategy_ASR_Long_stoploss
-from strategy.LWVolatilityBreakoutStrategy import DonchianMomentumStrategy
 
 
 def main():
@@ -16,9 +18,10 @@ def main():
     dfmain = DataLoader.load_data()
     df = dfmain.iloc[0:100000].copy()
     df = Indicators.add_indicators(df)
-    
+    config.Starting_Capital = df.iloc[0]["close"]
     prev_values = initialize_state_variables()
-
+    
+    '''
     # Process each row
     for i in range(1, len(df)):
         row = df.iloc[i]
@@ -28,12 +31,14 @@ def main():
         signal_long_short = EMACrossoverStrategy_long_short.run_strategy(row, prev_values)
         signal_ASR_long = run_strategy_ASR_Long(row, prev_values)
         signal_ASR_long_stoploss = run_strategy_ASR_Long_stoploss(row, prev_values)
-        lwvolatility = DonchianMomentumStrategy.run_strategy(df, i, prev_values)
         
-        chosen_strategy = lwvolatility
+        chosen_strategy = perfect_signal
 
 
         signal = chosen_strategy[0]
+        
+        df.loc[i, "signals"] = signal
+        
         # STEP 2: Update portfolio according to the signal
         prev_values["stop_loss"] = chosen_strategy[1]
         prev_values = update_portfolio(signal, row, prev_values)
@@ -41,11 +46,15 @@ def main():
 
         # STEP 3: Update the dataframe with the chosen signal and portfolio value
         df.loc[i, "signals"] = signal
-        df.loc[i, "portfolio_value"] = prev_values["portfolio_value"]
+        df.loc[i, "portfolio_value"] = float(prev_values["portfolio_value"])
         df.loc[i, "shares"] = prev_values["shares"]
         df.loc[i,"stop_loss"] = chosen_strategy[1]
-
-    Backtester.run_backtest(df)
+    
+        '''
+        
+    df = ps.generate_perfect_signals(df, lookahead=20)
+    #print(df)
+    #Backtester.run_backtest(df)
     Plotter.plot(df)
 
 def initialize_state_variables():
@@ -53,8 +62,8 @@ def initialize_state_variables():
         "short_entered": False,
         "entered": False,
         "shares": 0,
-        "amount": 10000.0,
-        "portfolio_value": 10000.0,
+        "amount": config.Starting_Capital,
+        "portfolio_value": config.Starting_Capital,
         "stop_loss": None,
     }
 
