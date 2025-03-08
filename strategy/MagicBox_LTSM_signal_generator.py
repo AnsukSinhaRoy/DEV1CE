@@ -209,7 +209,7 @@ y_pred = (y_pred_prob > 0.5).astype(int)
 df_test = pd.DataFrame({"Actual": y_test, "Predicted": y_pred.flatten()})
 
 # Save the comparison as a CSV file
-df_test.to_csv("notebooks/actual_vs_predicted.csv", index=False)
+df_test.to_csv("models/Magic_Box_LSTM_output/actual_vs_predicted.csv", index=False)
 print("Saved actual vs predicted labels to actual_vs_predicted.csv")
 
 # Print the first 200 rows for verification

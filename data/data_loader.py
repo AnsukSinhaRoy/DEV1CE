@@ -1,6 +1,5 @@
 # data_loader.py
 import pandas as pd
-from config import DATA_PATH
 import talib
 import config
 import numpy as np
@@ -9,7 +8,7 @@ class DataLoader:
     @staticmethod
     def load_data():
         # Load the data and parse the 'datetime' column
-        df = pd.read_csv(DATA_PATH, parse_dates=['datetime'])
+        df = pd.read_csv(config.DATA_PATH, parse_dates=['datetime'])
 
         # Ensure the 'datetime' column is in datetime format
         if not pd.api.types.is_datetime64_any_dtype(df['datetime']):
@@ -20,7 +19,11 @@ class DataLoader:
 
         # Extract the date from the datetime column
         df['date'] = df['datetime'].dt.date
+        # Convert 'datetime' column to proper datetime format
+        df["datetime"] = pd.to_datetime(df["datetime"])
 
+# Create 'seconds' column (Unix timestamp)
+        df["seconds"] = df["datetime"].map(pd.Timestamp.timestamp)
         # --- Trend Indicators ---
         df["EMA_slow"] = talib.EMA(df["close"], timeperiod=config.SLOW_EMA_PERIOD)
         df["EMA_fast"] = talib.EMA(df["close"], timeperiod=config.FAST_EMA_PERIOD)
