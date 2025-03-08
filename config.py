@@ -4,7 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Paths
-DATA_PATH = os.path.join(BASE_DIR, "data", "csv", "ETHUSDT_5m.csv")
+DATA_PATH = os.path.join(BASE_DIR, "data", "csv", "TRY.csv")
 OUTPUT_CSV = os.path.join(BASE_DIR, "output", "FullData.csv")
 SIGNALS_CSV = os.path.join(BASE_DIR, "output", "signals.csv")
 

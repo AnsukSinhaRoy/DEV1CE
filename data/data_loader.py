@@ -94,4 +94,3 @@ class DataLoader:
         df["shares"] = 0.0
 
         return df
-    
