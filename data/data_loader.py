@@ -19,11 +19,10 @@ class DataLoader:
 
         # Extract the date from the datetime column
         df['date'] = df['datetime'].dt.date
-        # Convert 'datetime' column to proper datetime format
         df["datetime"] = pd.to_datetime(df["datetime"])
-
-# Create 'seconds' column (Unix timestamp)
         df["seconds"] = df["datetime"].map(pd.Timestamp.timestamp)
+
+        # --- Price Action Indicators ---
         # --- Trend Indicators ---
         df["EMA_slow"] = talib.EMA(df["close"], timeperiod=config.SLOW_EMA_PERIOD)
         df["EMA_fast"] = talib.EMA(df["close"], timeperiod=config.FAST_EMA_PERIOD)
@@ -36,22 +35,32 @@ class DataLoader:
 
         df["ATR"] = talib.ATR(df["high"], df["low"], df["close"], timeperiod=config.ATR_PERIOD)
         df["Norm_ATR"] = df["ATR"] / df["close"]  # Normalized ATR for volatility
+        df["Volatility"] = df["close"].pct_change().rolling(window=20).std()  # Historical volatility
 
         # --- Momentum Indicators ---
         df["MACD"], df["MACD_signal"], df["MACD_hist"] = talib.MACD(
         df["close"], fastperiod=config.MACD_FAST, slowperiod=config.MACD_SLOW, signalperiod=config.MACD_SIGNAL
         )
-
         df["slowk"], df["slowd"] = talib.STOCH(
         df["high"], df["low"], df["close"],
         fastk_period=14, slowk_period=3, slowk_matype=0,
         slowd_period=3, slowd_matype=0
         )
-
         df["ROC"] = talib.ROC(df["close"], timeperiod=14)  # Rate of Change (Momentum)
-
-        # --- Trend Strength Indicator ---
         df["ADX"] = talib.ADX(df["high"], df["low"], df["close"], timeperiod=14)
+
+        # --- Candlestick Pattern Features ---
+        df["candle_color"] = np.where(df["close"] >= df["open"], 1, 0)
+        df["body_size"] = abs(df["close"] - df["open"])
+        df["upper_wick"] = df["high"] - df[["open", "close"]].max(axis=1)
+        df["lower_wick"] = df[["open", "close"]].min(axis=1) - df["low"]
+        df["body_to_range_ratio"] = df["body_size"] / (df["high"] - df["low"] + 1e-6)
+
+        # --- # Trend Strength & Statistical Features ---
+        df["rolling_mean"] = df["close"].rolling(window=5).mean()
+        df["rolling_std"] = df["close"].rolling(window=5).std()
+        df["z_score"] = (df["close"] - df["rolling_mean"]) / df["rolling_std"]
+        df["log_return"] = np.log(df["close"] / df["close"].shift(1))
 
         # --- Donchian Channel (Breakout Indicator) ---
         dc_length = 96
@@ -60,6 +69,7 @@ class DataLoader:
         df["DC_middle"] = (df["DC_upper"] + df["DC_lower"]) / 2       # Midpoint
 
         # --- Volume Analysis ---
+        df["volume_change"] = df["volume"].pct_change()
         df["Volume_SMA"] = df["volume"].rolling(window=20).mean()  # Moving average of volume
         df["Volume_Threshold"] = df["Volume_SMA"] * 1.2  # Threshold for strong volume
         df["OBV"] = talib.OBV(df["close"], df["volume"])  # On-Balance Volume
