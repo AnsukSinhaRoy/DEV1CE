@@ -7,6 +7,7 @@ import numpy as np
 class DataLoader:
     @staticmethod
     def load_data():
+        print("loading data...")
         # Load the data and parse the 'datetime' column
         df = pd.read_csv(config.DATA_PATH, parse_dates=['datetime'])
 
@@ -22,7 +23,8 @@ class DataLoader:
         df["datetime"] = pd.to_datetime(df["datetime"])
         df["seconds"] = df["datetime"].map(pd.Timestamp.timestamp)
 
-        # --- Price Action Indicators ---
+        # ------ Price Action Indicators ------
+        
         # --- Trend Indicators ---
         df["EMA_slow"] = talib.EMA(df["close"], timeperiod=config.SLOW_EMA_PERIOD)
         df["EMA_fast"] = talib.EMA(df["close"], timeperiod=config.FAST_EMA_PERIOD)
@@ -105,5 +107,5 @@ class DataLoader:
         df["signals"] = 0
         df["portfolio_value"] = config.Starting_Capital
         df["shares"] = 0.0
-
+        print("Data loaded successfully")
         return df
