@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def generate_perfect_signals(df, lookahead):
-    print(f"Generating perfect signals...with lookahead of", lookahead)
+    print(f"Generating perfect signals with lookahead of", lookahead, "...")
     df = df.copy()
     df['signals'] = np.nan  # Initialize with NaN for proper trend marking
 
@@ -23,4 +23,5 @@ def generate_perfect_signals(df, lookahead):
     # **Propagate the trend signals forward**
     df['signals'] = df['signals'].ffill().fillna(0)  # Fill NaN values with previous trend, default to 0
     
+    print("Perfect signals generated successfully.")
     return df
